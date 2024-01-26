@@ -13,6 +13,8 @@ class Command(BaseCommand):
         for payment in pay_data:
             pay_dict = payment.__dict__
             del pay_dict['_state']
+            pay_dict['pay_date'] = pay_dict.get('pay_date').__str__()
+            pay_dict["model"] = "users.payment"
             pay_list.append(pay_dict)
 
         fixtures_path = 'payment_data.json'
