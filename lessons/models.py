@@ -1,6 +1,5 @@
 from django.db import models
 
-from users.models import User
 
 NULLABLE = {'blank': True, 'null': True}
 ACTIVE_CHOICES = [
@@ -14,7 +13,6 @@ class Course(models.Model):
     preview = models.ImageField(upload_to='course/', verbose_name='Превью', **NULLABLE)
     description = models.TextField(verbose_name='Описание', **NULLABLE)
     is_active = models.BooleanField(default=False, choices=ACTIVE_CHOICES, verbose_name='Актуальность')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Создатель', **NULLABLE)
     public_date = models.DateField(auto_now=True, verbose_name='Дата публикации', **NULLABLE)
 
     def __str__(self):
@@ -33,11 +31,11 @@ class Lesson(models.Model):
     url = models.URLField(verbose_name='Ссылка', **NULLABLE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, verbose_name='Курс')
     is_active = models.BooleanField(default=False, choices=ACTIVE_CHOICES, verbose_name='Актуальность')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Создатель', **NULLABLE)
     public_date = models.DateField(auto_now=True, verbose_name='Дата публикации', **NULLABLE)
+    price_lesson = models.FloatField(verbose_name='Цена', **NULLABLE)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} - {self.description} - URL={self.url} - PRICE={self.price_lesson}'
 
     class Meta:
         verbose_name = 'урок'
