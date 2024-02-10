@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListAPIView, CreateAPIView, \
     RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from lessons.models import Course, Lesson, Payment
@@ -30,6 +31,8 @@ class CourseViewSet(ModelViewSet):
 
         if self.action == 'list' or self.action == 'retrieve':
             permission_classes = [IsModerator | IsOwner]
+        elif self.action == 'create':
+            permission_classes = [IsAuthenticated]
         elif self.action == 'update':
             permission_classes = [IsModerator | IsOwner]
         elif self.action == 'destroy':
