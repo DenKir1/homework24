@@ -30,13 +30,13 @@ class CourseViewSet(ModelViewSet):
         permission_classes = []
 
         if self.action == 'list' or self.action == 'retrieve':
-            permission_classes = [IsModerator | IsOwner]
+            permission_classes = [IsAuthenticated, IsModerator | IsOwner]
         elif self.action == 'create':
             permission_classes = [IsAuthenticated, ~IsModerator]
         elif self.action == 'update':
-            permission_classes = [IsModerator | IsOwner]
+            permission_classes = [IsAuthenticated, IsModerator | IsOwner]
         elif self.action == 'destroy':
-            permission_classes = [IsOwner]
+            permission_classes = [IsAuthenticated, IsOwner]
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
