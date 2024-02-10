@@ -88,9 +88,17 @@ class LessonRetrieveView(RetrieveAPIView):
 
 
 class LessonUpdateView(UpdateAPIView):
-    queryset = Lesson.objects.all()
+    #queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsModerator | IsOwner]
+
+    def get_queryset(self):
+        if not self.request.user.is_staff:
+            return Lesson.objects.filter(owner=self.request.user)
+        elif self.request.user.is_staff:
+            return Lesson.objects.all()
+        else:
+            raise PermissionDenied
 
 
 class LessonDeleteView(DestroyAPIView):
