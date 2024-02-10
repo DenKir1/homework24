@@ -25,7 +25,7 @@ class UserViewSet(ModelViewSet):
         if self.action == 'retrieve' or self.action == 'list':
             permission_classes = [IsAuthenticated]
         if self.action == 'update' or self.action == 'destroy':
-            permission_classes = [IsOwner]
+            permission_classes = [IsAuthenticated, IsOwner]
         return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
