@@ -11,14 +11,14 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
 
     def perform_create(self, serializer):
-        user = super().perform_create(serializer)
+        user = serializer.save(is_active=True)
+        user.set_password(user.password)
+        user.save()
 
-        if user is not None:
-            password = self.request.data['password']
-            user.set_password(password)
-            user.save()
-
-        return user
+    def perform_update(self, serializer):
+        user = serializer.save(is_active=True)
+        user.set_password(user.password)
+        user.save()
 
     def get_permissions(self):
         permission_classes = []
