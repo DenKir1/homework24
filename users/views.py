@@ -9,6 +9,11 @@ from users.serializers import UserSerializer, MyTokenObtainPairSerializer, UserO
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+        user.set_password(serializer.data['password'])
+        user.save()
+
     def get_permissions(self):
         permission_classes = []
         if self.action == 'update' or self.action == 'destroy':
