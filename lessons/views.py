@@ -18,7 +18,7 @@ class PaymentViewSet(ModelViewSet):
 
 
 class CourseViewSet(ModelViewSet):
-    queryset = Course.objects.all()
+    #queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
     def perform_create(self, serializer):
@@ -49,9 +49,17 @@ class CourseViewSet(ModelViewSet):
 
 
 class LessonListView(ListAPIView):
-    queryset = Lesson.objects.all()
+    #queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsModerator | IsOwner]
+
+    def get_queryset(self):
+        if not self.request.user.is_staff:
+            return Lesson.objects.filter(owner=self.request.user)
+        elif self.request.user.is_staff:
+            return Lesson.objects.all()
+        else:
+            raise PermissionDenied
 
 
 class LessonCreateView(CreateAPIView):
@@ -66,9 +74,17 @@ class LessonCreateView(CreateAPIView):
 
 
 class LessonRetrieveView(RetrieveAPIView):
-    queryset = Lesson.objects.all()
+    #queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsModerator | IsOwner]
+
+    def get_queryset(self):
+        if not self.request.user.is_staff:
+            return Lesson.objects.filter(owner=self.request.user)
+        elif self.request.user.is_staff:
+            return Lesson.objects.all()
+        else:
+            raise PermissionDenied
 
 
 class LessonUpdateView(UpdateAPIView):
