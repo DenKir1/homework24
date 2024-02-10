@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListAPIView, CreateAPIView, \
     RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -28,12 +29,20 @@ class CourseViewSet(ModelViewSet):
         permission_classes = []
 
         if self.action == 'list' or self.action == 'retrieve':
-            permission_classes = [IsOwner | IsModerator]
+            permission_classes = [IsModerator | IsOwner]
         elif self.action == 'update':
             permission_classes = [IsModerator | IsOwner]
         elif self.action == 'destroy':
             permission_classes = [IsOwner]
         return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        if not self.request.user.is_staff:
+            return Course.objects.filter(owner=self.request.user)
+        elif self.request.user.is_staff:
+            return Course.objects.all()
+        else:
+            raise PermissionDenied
 
 
 class LessonListView(ListAPIView):

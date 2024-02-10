@@ -11,7 +11,7 @@ class UserViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         user = serializer.save()
-        user.set_password(serializer.data['password'])
+        user.set_password(serializer.data.get('password'))
         user.save()
 
     def get_permissions(self):
