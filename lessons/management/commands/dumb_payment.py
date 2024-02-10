@@ -10,12 +10,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options) -> None:
         pay_data = Payment.objects.all()
         pay_list = []
+
         for payment in pay_data:
+            payment_dict = dict(model="users.payment")
+
+            payment_dict["pk"] = payment.id
             pay_dict = payment.__dict__
             del pay_dict['_state']
             pay_dict['pay_date'] = pay_dict.get('pay_date').__str__()
-            pay_dict["model"] = "users.payment"
-            pay_list.append(pay_dict)
+            payment_dict["fields"] = pay_dict
+            pay_list.append(payment_dict)
 
         fixtures_path = 'payment_data.json'
         print(pay_list)

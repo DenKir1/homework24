@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from users.models import User, Payment
+from lessons.models import Payment
+from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,7 +18,20 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['email', 'avatar', 'phone', 'city', 'is_active', 'payments', ]
 
 
-class PaymentSerializer(serializers.ModelSerializer):
+class UserOtherSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = Payment
-        fields = '__all__'
+        model = User
+        fields = ['email', 'avatar', 'phone', 'city', ]
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Добавление пользовательских полей в токен
+        token['username'] = user.username
+        token['email'] = user.email
+
+        return token

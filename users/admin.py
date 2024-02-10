@@ -1,6 +1,9 @@
 from django.contrib import admin
 
-from users.models import Payment
+from lessons.models import Payment
+from users.models import User
+
+admin.site.register(User)
 
 
 @admin.register(Payment)

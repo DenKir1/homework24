@@ -8,7 +8,7 @@ class Command(BaseCommand):
     requires_migrations_checks = True
 
     def handle(self, *args, **options) -> None:
-        fixtures_path = 'user_payment_data.json'
+        fixtures_path = 'payment_data.json'
         Payment.objects.all().delete()
 
         try:

@@ -1,17 +1,26 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from users.models import User, Payment
-from users.serializers import UserSerializer, PaymentSerializer
+from users.models import User
+from users.permissions import IsOwner
+from users.serializers import UserSerializer, MyTokenObtainPairSerializer, UserOtherSerializer
 
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+
+    def get_permissions(self):
+        permission_classes = []
+        if self.action == 'update' or self.action == 'destroy':
+            permission_classes = [IsOwner]
+        return [permission() for permission in permission_classes]
+
+    def get_serializer_class(self):
+        # print(self.__dict__)
+        if self.request.user:  # не нашел с кем его сравнить в сериализаторе
+            return UserSerializer
+        return UserOtherSerializer
 
 
-class PaymentViewSet(ModelViewSet):
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
-    filter_backends = (DjangoFilterBackend, )
-    filterset_fields = ('pay_course', 'pay_lesson', 'pay_method', )
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
