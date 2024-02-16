@@ -73,3 +73,19 @@ class Payment(models.Model):
         verbose_name = 'платеж'
         verbose_name_plural = 'платежи'
         ordering = ['pay_date', ]
+
+
+class Subscribe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь подписки', **NULLABLE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс подписки', **NULLABLE)
+
+    is_active = models.BooleanField(default=True, choices=ACTIVE_CHOICES, verbose_name='Актуальность')
+    public_date = models.DateField(auto_now=True, verbose_name='Дата подписки', **NULLABLE)
+
+    def __str__(self):
+        return f'{self.user} - {self.course}'
+
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+        ordering = ['public_date', 'course', 'user', ]

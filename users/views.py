@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -21,7 +21,7 @@ class UserViewSet(ModelViewSet):
         user.save()
 
     def get_permissions(self):
-        permission_classes = []
+        permission_classes = [AllowAny]
         if self.action == 'retrieve' or self.action == 'list':
             permission_classes = [IsAuthenticated]
         if self.action == 'update' or self.action == 'destroy':
