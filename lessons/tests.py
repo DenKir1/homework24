@@ -1,8 +1,9 @@
 
 from rest_framework import status
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 from users.models import User
-from lessons.models import Course, Lesson, Subscribe
+from lessons.models import Course, Lesson, Subscribe, Payment
 
 
 class LessonTestCase(APITestCase):
@@ -68,3 +69,22 @@ class SubscribeTestCase(APITestCase):
 
         response = self.client.post('lessons:subscribe', data=data)
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+
+
+class PaymentAPITestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create(email='test@test.test', is_active=True)
+        self.user.set_password('test')
+        self.user.save()
+        self.client.force_authenticate(user=self.user)
+        self.course = Course.objects.create(name='test', owner=self.user)
+        self.payment = Payment.objects.create(
+            user=self.user,
+            pay_course=self.course,
+            pay_method='transfer',
+        )
+
+    def test_payment_list(self):
+        """ Проверка списка Payment """
+        response = self.client.get(reverse('payment_list'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
