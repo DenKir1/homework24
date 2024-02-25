@@ -61,8 +61,8 @@ class Lesson(models.Model):
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     pay_date = models.DateTimeField(auto_now=True, verbose_name='Дата оплаты', **NULLABLE)
-    pay_url = models.CharField(verbose_name='Ссылка на оплату', **NULLABLE)
-    session = models.CharField(max_length=150, verbose_name='Сессия для оплаты в Stripe', **NULLABLE)
+    pay_url = models.CharField(max_length=400, verbose_name='Ссылка на оплату', **NULLABLE)
+    session = models.CharField(max_length=400, verbose_name='Сессия для оплаты в Stripe', **NULLABLE)
     pay_course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Оплаченный курс', **NULLABLE)
     pay_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Оплаченный урок', **NULLABLE)
     price_summ = models.FloatField(verbose_name='Цена', **NULLABLE)

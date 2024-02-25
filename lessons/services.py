@@ -17,7 +17,7 @@ def get_stripe(serializer: Payment):
         product=product.id,
     )
     session = stripe.checkout.Session.create(
-        success_url='https://example.com/success',
+        success_url='http://127.0.0.1:8000/',
         line_items=[{'price': price.id, 'quantity': 1, }],
         mode='payment',
 
