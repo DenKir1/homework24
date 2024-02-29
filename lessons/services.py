@@ -4,7 +4,6 @@ import stripe
 from celery import shared_task
 from django.core.mail import send_mail
 from django.utils import timezone
-from rest_framework.generics import get_object_or_404
 
 from config import settings
 from lessons.models import Payment, Subscribe, Lesson, Course
