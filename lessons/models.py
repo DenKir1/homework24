@@ -26,7 +26,8 @@ class Course(models.Model):
     description = models.TextField(verbose_name='Описание', **NULLABLE)
     price_course = models.FloatField(verbose_name='Цена', **NULLABLE)
     is_active = models.BooleanField(default=False, choices=ACTIVE_CHOICES, verbose_name='Актуальность')
-    public_date = models.DateField(auto_now=True, verbose_name='Дата публикации', **NULLABLE)
+    public_date = models.DateField(auto_created=True, verbose_name='Дата публикации', **NULLABLE)
+    update_date = models.DateTimeField(auto_now=True, verbose_name='Дата обновления', **NULLABLE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Создатель', **NULLABLE)
 
     def __str__(self):

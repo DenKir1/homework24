@@ -11,7 +11,7 @@ from lessons.models import Course, Lesson, Payment, Subscribe
 from lessons.paginators import LessonPagination
 from lessons.permissions import IsOwner, IsModerator
 from lessons.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, SubscribeSerializer
-from lessons.services import get_stripe, retrieve_stripe
+from lessons.services import get_stripe, retrieve_stripe, subscriptions_mailing
 
 
 class PaymentViewSet(ModelViewSet):
@@ -80,6 +80,10 @@ class CourseViewSet(ModelViewSet):
         else:
             raise PermissionDenied
 
+    def perform_update(self, serializer):
+        course_id = serializer.save(owner=self.request.user).id
+        subscriptions_mailing.delay(course_id=course_id)
+
 
 class LessonListView(ListAPIView):
     # queryset = Lesson.objects.all()
@@ -105,6 +109,9 @@ class LessonCreateView(CreateAPIView):
         new_lesson = serializer.save()
         new_lesson.owner = self.request.user
         new_lesson.save()
+        course_id = new_lesson.course.id
+        lesson_id = new_lesson.id
+        subscriptions_mailing.delay(course_id=course_id, lesson_id=lesson_id)
 
 
 class LessonRetrieveView(RetrieveAPIView):
@@ -133,6 +140,11 @@ class LessonUpdateView(UpdateAPIView):
             return Lesson.objects.all()
         else:
             raise PermissionDenied
+
+    def perform_update(self, serializer):
+        course_id = serializer.save().course.id
+        lesson_id = serializer.save().id
+        subscriptions_mailing.delay(course_id=course_id, lesson_id=lesson_id)
 
 
 class LessonDeleteView(DestroyAPIView):
