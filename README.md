@@ -1,4 +1,8 @@
 SPA веб-приложение бэкенд-сервер, который возвращает клиенту JSON-структуры
-Использование фикстур для заполнения таблицы платежей:
-python manage.py dumpdata users.payment > user_payment_data.json
-python manage.py loaddata user_payment_data.json
+
+Для запуска проекта в Docker необходимо заполнить файл .env (по образцу .env.sample)
+и выполнить команды:
+docker-compose build
+docker-compose up
+
+
